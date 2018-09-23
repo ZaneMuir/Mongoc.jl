@@ -12,8 +12,17 @@ before_install: # from https://github.com/mongodb/mongo-c-driver/blob/master/.tr
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install mongodb || true; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew services start mongodb; fi
 
-services:
-  - mongodb
+# install specific version of mongodb
+# https://github.com/travis-ci/travis-ci/issues/7614
+# https://github.com/mongodb/pymodm/blob/master/.travis.yml
+install:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-4.0.2.tgz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tar xzf mongodb-linux-x86_64-4.0.2.tgz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ${PWD}/mongodb-linux-x86_64-4.0.2/bin/mongod --version; fi
+
+before_script:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then mkdir ${PWD}/mongodb-linux-x86_64-4.0.2/data; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ${PWD}/mongodb-linux-x86_64-4.0.2/bin/mongod --dbpath ${PWD}/mongodb-linux-x86_64-4.0.2/data --logpath ${PWD}/mongodb-linux-x86_64-4.0.2/mongodb.log --fork; fi
 
 julia:
   - 0.6
