@@ -372,6 +372,10 @@ end
 
 BSON(dict::Dict) = BSON(dict...)
 
+macro bson_str(json_string)
+    BSON(json_string)
+end
+
 """
     as_json(bson::BSON; canonical::Bool=false) :: String
 
